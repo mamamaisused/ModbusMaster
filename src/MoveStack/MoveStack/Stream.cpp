@@ -39,7 +39,7 @@ Stream::~Stream(void)
 	;
 }
 
-bool Stream::begin(uint16_t baudrate)
+bool Stream::begin(int baudrate)
 {
 	_com_dcb_.BaudRate = baudrate;
 	_hcom = CreateFileA(	_port_name, //´®¿ÚÃû

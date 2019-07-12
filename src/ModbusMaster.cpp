@@ -702,7 +702,7 @@ uint8_t ModbusMaster::ModbusMasterTransaction(uint8_t u8MBFunction)
   u8ModbusADU[u8ModbusADUSize] = 0;
 
   // flush receive buffer before transmitting request
-  while (_serial->read() != -1);
+  while (_serial->available()>0){_serial->read();}
 
   // transmit request
   if (_preTransmission)

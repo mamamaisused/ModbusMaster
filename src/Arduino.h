@@ -38,7 +38,7 @@ public:
 			char stopbit);
 	~Stream(void);
 	void flush(void);
-	bool begin(uint16_t baudrate);
+	bool begin(int baudrate);
 	void close(void);
 	DWORD write(uint8_t data);
 	uint8_t read(void);
