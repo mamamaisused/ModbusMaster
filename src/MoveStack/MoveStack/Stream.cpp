@@ -41,6 +41,7 @@ Stream::~Stream(void)
 
 bool Stream::begin(int baudrate)
 {
+	DCB sysdcb;
 	_com_dcb_.BaudRate = baudrate;
 	_hcom = CreateFileA(	_port_name, //串口名
 		GENERIC_READ | GENERIC_WRITE, //支持读写
@@ -51,18 +52,25 @@ bool Stream::begin(int baudrate)
 		NULL);//用于复制文件句柄，默认值为NULL，对串口而言该参数必须置为NULL
 	if(_hcom == INVALID_HANDLE_VALUE)
 	{
-		printf("[Error]:Open Port Error !\n");
+		printf("[Error]: Open Port Error!\n");
 		return false;
 	}
 	if(!SetupComm(_hcom,_read_buffer_size,_send_buffer_size))
 	{
-		printf("[Error]:Set Buffer Error !\n");
+		printf("[Error]: Set Buffer Error!\n");
 		return false;
 	}
-	if(!SetCommState(_hcom,&_com_dcb_))
+	/* first get com state then set it. */
+	GetCommState(_hcom, &sysdcb);
+	sysdcb.BaudRate = _com_dcb_.BaudRate;
+	sysdcb.Parity = _com_dcb_.Parity;
+	sysdcb.StopBits = _com_dcb_.StopBits;
+	sysdcb.ByteSize = _com_dcb_.ByteSize;
+	if(!SetCommState(_hcom,&sysdcb))
 	{
+		printf("[Error]: Set Parameter False!\n");
 		return false;
-		printf("[Error]:Set Parameter False !\n");
+		
 	}
 	return true;
 }
